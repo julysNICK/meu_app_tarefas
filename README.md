@@ -1,16 +1,26 @@
 # meu_app_tarefas
 
-A new Flutter project.
+Of course. Here is the translation in English:
 
-## Getting Started
+# My Task App
 
-This project is a starting point for a Flutter application.
+This is a to-do list application built with Flutter.
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 How to Run the Project
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+1.  Clone the repository: `git clone https://...`
+2.  Change into the project directory: `cd my_task_app`
+3.  Install the Flutter dependencies: `flutter pub get`
+4.  Run the application: `flutter run`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## ⚠️ Environment Prerequisites (Linux Desktop)
+
+This project uses `sqflite` for local storage, which requires the SQLite3 library to run on Linux desktops.
+
+Before running the project, install the required library:
+
+**On Debian/Ubuntu-based systems:**
+
+```sh
+sudo apt-get install libsqlite3-dev
+```
