@@ -1,0 +1,80 @@
+name: Build Desktop (macOS & Windows)
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+env:
+    FLUTTER_CHANNEL: stable
+
+jobs:
+    build-macos:
+        runs-on: macos-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            # cache do pub para acelerar os próximos builds
+            - name: Cache pub
+              uses: actions/cache@v4
+              with:
+                  path: ~/.pub-cache
+                  key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+                  restore-keys: ${{ runner.os }}-pub-
+
+            - name: Set up Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  channel: ${{ env.FLUTTER_CHANNEL }}
+
+            - name: Resolve deps & enable macOS
+              run: |
+                  flutter --version
+                  flutter config --enable-macos-desktop
+                  flutter pub get
+
+            - name: Build macOS (release)
+              run: flutter build macos --release
+
+            - name: Zip .app
+              run: |
+                  cd build/macos/Build/Products/Release
+                  ditto -c -k --sequesterRsrc --keepParent *.app macos-app.zip
+
+            - name: Upload macOS artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: macos-app
+                  path: build/macos/Build/Products/Release/macos-app.zip
+
+    build-windows:
+        runs-on: windows-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Cache pub
+              uses: actions/cache@v4
+              with:
+                  path: ~/.pub-cache
+                  key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+                  restore-keys: ${{ runner.os }}-pub-
+
+            - name: Set up Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  channel: ${{ env.FLUTTER_CHANNEL }}
+
+            - name: Resolve deps & enable Windows
+              run: |
+                  flutter --version
+                  flutter config --enable-windows-desktop
+                  flutter pub get
+
+            - name: Build Windows (release)
+              run: flutter build windows --release
+
+            - name: Upload Windows artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: windows-app
+                  path: build/windows/x64/runner/Release/**
